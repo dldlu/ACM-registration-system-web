@@ -1,12 +1,12 @@
 <template>
   <div style="display: flex; flex-direction: column">
     <div style="display: flex; flex-direction: column">
-      <div class="text">
+      <div class="text" >
         比赛时间：<br />
-        热身赛 2022年4月15日 19:00-20:30<br />
-        正式赛 2022年4月16日 13:00-18:00<br />
+        热身赛:{{ words.content.rs }}<br />
+        正式赛:{{ words.content.zs }}<br />
         想参赛的外校同学请发邮件到support@dluacm.cn商讨相关事宜。<br />
-        参赛选手必须仔细阅读<a href="http://dluacm.cn/?p=325" target="_blank"
+        参赛选手必须仔细阅读<a :href="words.url" target="_blank"
           >参赛要求</a
         >，了解比赛规则，并已学习评测系统的使用。
       </div>
@@ -43,9 +43,14 @@
 </template>
 
 <script>
+//获取外部链接
+let confapi = window.server;
+console.log(confapi)
+
 export default {
   data() {
     return {
+      words: confapi,
       checked: false,
       disable: true,
     };
