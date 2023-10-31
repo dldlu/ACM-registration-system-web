@@ -3,99 +3,110 @@
     <div class="postList">
       <form class="user">
         <span class="font"
-          >昵称（昵称不能透露个人信息）（数据库为utf-8编码，请勿输入奇怪的文字（例如生僻字、emoji表情等），下同</span
+        >昵称</span
         >
         <el-input
-          v-model="form.nickname"
-          name="Uname"
-          v-validate="'required|Uname'"
+            placeholder="请填写昵称,不能透露个人信息,请勿输入生僻字、emoji表情等,下同"
+            v-model="form.nickname"
+            name="Uname"
+            v-validate="'required|Uname'"
         ></el-input>
 
         <span class="error-msg">{{ errors.first("Uname") }}</span>
 
         <span class="font">姓名</span>
         <el-input
-          v-model="form.name"
-          v-validate="'required|Tname'"
-          name="Tname"
+            v-model="form.name"
+            placeholder="请填写真实姓名"
+            v-validate="'required|Tname'"
+            name="Tname"
         ></el-input>
         <span class="error-msg">{{ errors.first("Tname") }}</span>
 
         <span class="font">性别</span>
 
         <el-select
-          v-model="form.gender"
-          placeholder="请选择性别"
-          name="sex"
-          v-validate="'required'"
+            v-model="form.gender"
+            placeholder="请选择性别"
+            name="sex"
+            v-validate="'required'"
         >
           <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
           >
           </el-option>
         </el-select>
         <span class="error-msg">{{ errors.first("sex") }}</span>
 
-        <span class="font">专业班级（例如：“计科221”，外校同学填学校）</span>
+        <span class="font">专业班级</span>
         <el-input
-          v-model="form.clas"
-          v-validate="'required|class'"
-          name="class"
+            placeholder="请填写真实班级,例如:计科221,外校同学填学校"
+            v-model="form.clas"
+            v-validate="'required|class'"
+            name="class"
         ></el-input>
         <span class="error-msg">{{ errors.first("class") }}</span>
 
-        <span class="font">学号（外校同学填88888888）</span>
+        <span class="font">学号</span>
         <el-input
-          v-model="form.stuid"
-          v-validate="'required|number'"
-          name="number"
+            placeholder="请填写真实学号,外校同学填88888888"
+            v-model="form.stuid"
+            v-validate="'required|number'"
+            name="number"
         ></el-input>
         <span class="error-msg">{{ errors.first("number") }}</span>
 
-        <span class="font">手机（外校同学填18888888888）</span>
+        <span class="font">手机</span>
         <el-input
-          v-model="form.phone"
-          v-validate="'required|phone'"
-          name="phone"
+            placeholder="请填写有效手机号,外校同学填18888888888"
+            v-model="form.phone"
+            v-validate="'required|phone'"
+            name="phone"
         ></el-input>
         <span class="error-msg">{{ errors.first("phone") }}</span>
 
-        <span class="font">QQ（连大同学请务必加群811467283）</span>
+        <span class="font">QQ</span>
         <el-input
-          v-model="form.qq"
-          v-validate="'required|qq'"
-          name="qq"
+            v-model="form.qq"
+            placeholder="请填写有效QQ"
+            v-validate="'required|qq'"
+            name="qq"
         ></el-input>
         <span class="error-msg">{{ errors.first("qq") }}</span>
 
         <span class="font">邮箱</span>
         <el-input
-          v-model="form.email"
-          v-validate="'required|email'"
-          name="email"
+            v-model="form.email"
+            placeholder="请填写有效邮箱"
+            v-validate="'required|email'"
+            name="email"
         ></el-input>
         <span class="error-msg">{{ errors.first("email") }}</span>
       </form>
+      <div id="captcha-element"></div>
       <el-button class="btn" @click="back">上一步</el-button>
       <el-button
-        class="btn"
-        style="float: right"
-        @click="goSubmit"
-        v-preventReClick
-        >立即报名</el-button
-      >
+          ref="captcha"
+          id="button"
+          class="captcha"
+          v-preventReClick
+      ></el-button>
+      <el-button @click="goSubmit" style="float: right">立即报名</el-button>
     </div>
   </div>
 </template>
 
 <script>
-import { postInfo } from "@/api";
+import {captchaVerifyCallback,getInstance,onBizResultCallback} from "@/plugins/captcha";
+
 export default {
   data() {
     return {
+      captcha:{},
+      that: this,
       loading: false,
       ip: "",
       form: {
@@ -121,57 +132,23 @@ export default {
     };
   },
   methods: {
-    back() {
-      this.$router.push("/apply/reading");
-    },
     goSubmit() {
+      // console.log(this)
       this.$validator.validate().then((result) => {
         if (!result) {
           this.$alert(this.errors.all()[0], "提示", {
             confirmButtonText: "确定",
           });
+          return false
         } else {
-          this.ip = returnCitySN["cip"];
-          let that = this;
-          let info = {};
-          info.nickName = this.form.nickname;
-          info.studentName = this.form.name;
-          info.studentNumber = this.form.stuid;
-          info.majorClass = this.form.clas;
-          info.sex = this.form.gender;
-          info.qq = this.form.qq;
-          info.email = this.form.email;
-          info.phone = this.form.phone;
-          info.lastIp = this.ip;
-          grecaptcha.ready(function () {
-            grecaptcha.execute("6Ldd11UbAAAAANj6G_YMMMJUlRAo8v7gsy_gP-js", {
-                action: "submit",
-              })
-              .then(async function (token) {
-                // Add your logic to submit to your backend server here.
-                that.loading = true;
-                let result = await postInfo(JSON.stringify(info), token);
-                if (result.code === 200) {
-                  that.$alert("报名成功", "提示", {
-                    confirmButtonText: "确定",
-                    callback: () => {
-                      that.loading = false;
-                    },
-                  });
-                  await that.$router.push("/inquire");
-                } else {
-                  that.$alert(result.message, "提示", {
-                    confirmButtonText: "确定",
-                    callback: () => {
-                      that.loading = false;
-                    },
-                  });
-                }
-              });
-          });
+          this.$refs.captcha.$el.click()
+          return true
         }
       });
     },
+    back() {
+      this.$router.push("/apply/reading");
+    }
   },
   mounted() {},
 };

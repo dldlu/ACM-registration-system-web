@@ -3,7 +3,7 @@ import nprogress from "nprogress";
 import "nprogress/nprogress.css";
 
 const request = axios.create({
-    baseURL: "/api",
+    baseURL: "https://reg.dluacm.cn/api",
     timeout: 5000
 });
 request.interceptors.request.use((config => {

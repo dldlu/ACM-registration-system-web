@@ -15,4 +15,13 @@ export const inquireInfo=(studentNumber,studentName,token)=>request({
     headers: { 'token':token },
 });
 
+export const captchaCheck=(captchaVerifyParam)=>request({
+    url:'/contest/captcha',
+    method:'post',
+    headers: { 'Content-Type': 'application/json'},
+    data: captchaVerifyParam,
+});
+
+
+
 

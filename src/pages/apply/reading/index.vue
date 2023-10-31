@@ -1,14 +1,7 @@
 <template>
   <div style="display: flex; flex-direction: column">
     <div style="display: flex; flex-direction: column">
-      <div class="text" >
-        比赛时间：<br />
-        热身赛:{{ words.content.rs }}<br />
-        正式赛:{{ words.content.zs }}<br />
-        想参赛的外校同学请发邮件到support@dluacm.cn商讨相关事宜。<br />
-        参赛选手必须仔细阅读<a :href="words.url" target="_blank"
-          >参赛要求</a
-        >，了解比赛规则，并已学习评测系统的使用。
+      <div class="text" v-html="words.content">
       </div>
       <img
         src="http://dluacm.cn/wp-content/uploads/2022/02/wp_editor_md_b96983a26d11ad6c7bf3c65a3fb804c8.jpg"
@@ -35,9 +28,9 @@
         style=""
       /><br />
     </div>
-    <el-checkbox class="check" v-model="checked" @change="chg"
-      >我已仔细阅读并同意以上要求</el-checkbox
-    >
+    <el-checkbox class="check" v-model="checked" @change="chg">
+      我已仔细阅读并同意
+    </el-checkbox><a v-bind:href="words.url" style="align-self: center;text-decoration: none">《参赛要求》</a>
     <el-button class="next" :disabled="disable" @click="next">下一步</el-button>
   </div>
 </template>

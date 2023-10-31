@@ -59,7 +59,7 @@ Validator.extend('phone', {
         zh_CN: field => '手机号格式错误'
     },
     validate: value => {
-        return /^(13[0-9]|14[0-9]|15[0-9]|166|17[0-9]|18[0-9]|19[8|9])\d{8}$/.test(value)
+        return /^(13[0-9]|14[0-9]|15[0-9]|166|17[0-9]|18[0-9]|19[0-9])\d{8}$/.test(value)
     }
 })
 
@@ -77,7 +77,7 @@ Validator.extend('number', {
         zh_CN: field => '学号格式错误'
     },
     validate: value => {
-        return /^(18|19|20|21|22)\d{6}$/.test(value)||/^88888888$/.test(value)
+        return /^\d{8}$/.test(value)||/^88888888$/.test(value)
     }
 })
 
